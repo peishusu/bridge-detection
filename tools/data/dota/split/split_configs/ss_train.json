@@ -1,0 +1,28 @@
+{
+  "nproc": 10,
+  "img_dirs": [
+    "/scratch/luojunwei/WorldBridge/train6/images/"
+  ],
+  "ann_dirs": [
+    "/scratch/luojunwei/WorldBridge/train6/labelTxt/"
+  ],
+  "sizes": [
+    1024
+  ],
+  "gaps": [
+    200
+  ],
+  "rates": [
+    1.0
+  ],
+  "img_rate_thr": 0.6,
+  "iof_thr": 0.3,
+  "no_padding": false,
+  "padding_value": [
+    104,
+    116,
+    124
+  ],
+  "save_dir": "/scratch/luojunwei/WorldBridge/train6/split_1024_gap200_iof03_2",
+  "save_ext": ".png"
+}
