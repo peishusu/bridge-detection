@@ -93,11 +93,14 @@ If you find this work helpful for your research, please consider citing our pape
     publisher={IEEE}
 }
 
-
-@article{li2024scene,
-    title={STAR: A First-Ever Dataset and A Large-Scale Benchmark for Scene Graph Generation in Large-Size Satellite Imagery},
-    author={Li, Yansheng and Wang, Linlin and Wang, Tingzhu and Yang, Xue and Luo, Junwei and Wang, Qi and Deng, Youming and Wang, Wenbin and Sun, Xian and Li, Haifeng and Dang, Bo and Zhang, Yongjun and Yu, Yi and Yan Junchi},
-    journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
-    year={2024},
-    publisher={IEEE}}
+@ARTICLE{STAR,
+    author={Li, Yansheng and Wang, Linlin and Wang, Tingzhu and Yang, Xue and Luo, Junwei and Wang, Qi and Deng, Youming and Wang, Wenbin and Sun, Xian and Li, Haifeng and Dang, Bo and Zhang, Yongjun and Yu, Yi and Yan, Junchi},
+    journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
+    title={STAR: A First-Ever Dataset and a Large-Scale Benchmark for Scene Graph Generation in Large-Size Satellite Imagery}, 
+    year={2025},
+    volume={47},
+    number={3},
+    pages={1832-1849},
+    doi={10.1109/TPAMI.2024.3508072},
+    publisher={IEEE}
 }
