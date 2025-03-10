@@ -24,13 +24,12 @@
 - [Resource](#resource)
 - [Introduction](#introduction)
 - [GLH-Bridge Dataset](#glh-bridge-dataset)
-- [Benchmark](#benchmark)
+- [Code](#code)
 - [Citation](#citation)
 
 ---
 
 ## Resource
-
 
 - **Dataset@Baidu Drive**: [Link](https://pan.baidu.com/s/1tXpFukMkOGHXPsSKPRRf3w?pwd=4zgx)  
 - **Dataset@Hugging Face**: [Link](https://huggingface.co/datasets/ll-13/GLH-Bridge)  
@@ -65,6 +64,18 @@ Image sizes range from 2,048×2,048 to 16,384×16,384 pixels.
 - Multi-scale instances
 - Varied instance densities
 
+## Code
+
+
+Please employ the following scripts for training and inference:
+
+- **Training**:
+  - Multi-resolution data splitting: [`tools/split_code.py`](./tools/split_code.py)
+  - Load checkpoint for stage-by-stage training: [`tools/loadckpt_backbone.py`](./tools/loadckpt_backbone.py)
+  - Training script: [`train_dist_mmrot.sh`](./train_dist_mmrot.sh)
+
+- **Inference**:
+  - Test script: [`test_mmrot_all.sh`](./test_mmrot_all.sh)
 
 ### Citation
 
