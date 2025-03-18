@@ -263,7 +263,7 @@ class LoadFPNImageFromFile:
         if w_max >= self.global_threshold or h_max >= self.global_threshold:
             read_global=True
 
-        read_global=True
+        read_global=False # no training crop
 
         results['g_img_list'] = []
         results['g_img_infos'] = []
