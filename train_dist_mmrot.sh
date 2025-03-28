@@ -1,18 +1,6 @@
 
 source activate mmrot
 
-## 1. refer to tools\split_code.py, process the original large-size images to multi-resolution groups
-## 2. refer to tools\data\README.md, crop images into patches of each group
-## 3. begin train:
-
-tools/dist_train.sh /scratch/luojunwei/WorldBridge/Code/mmrotate_bridge/configs/bridge_benchmark/oriented_rcnn_r50_fpn_2x_ImgFPN_oc.py 2 \
-                    --work-dir bridge_train/oriented_rcnn_r50_fpn_2x_ImgFPN_dist
-
-## 4. tools\loadckpt_backbone.py for multi-ImgFPN-stage train (depends on your dataset), continue train
-# tools/dist_train.sh /scratch/luojunwei/WorldBridge/Code/mmrotate_bridge/configs/bridge_benchmark/oriented_rcnn_r50_fpn_2x_ImgFPN_oc.py 2 \
-#                     --work-dir bridge_train/oriented_rcnn_r50_fpn_2x_ImgFPN_dist_load-d2-backbone
-
-
 # 1. Split original images into multi-resolution groups
 # python tools/split_code.py
 
