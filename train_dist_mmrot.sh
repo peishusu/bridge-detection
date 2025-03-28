@@ -15,4 +15,4 @@ tools/dist_train.sh $CONFIG $GPUS --work-dir $WORK_DIR
 
 # 4. (Optional) Multi-stage training with pre-trained backbone
 # python tools/loadckpt_backbone.py, than change the 'load_from=' in your config file
-# tools/dist_train.sh $CONFIG $GPUS --work-dir $WORK_DIR_loadfrom_xx --resume-from [新检查点路径]
+# tools/dist_train.sh $CONFIG $GPUS --work-dir $WORK_DIR_loadfrom_xx
