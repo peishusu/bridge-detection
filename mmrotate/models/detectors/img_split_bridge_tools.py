@@ -801,16 +801,6 @@ def merge_results_tensor_global_local(global_bboxes_list, local_bboxes_list, iou
 
     weight_local =1
     weight_global =1
-    
-    # TODO:将global_boxes中的小型桥梁置信度降低
-    # if tmp_gbox[-1] < 0.05:
-    #     # global_bboxes_list[arr][-1] = 0.001
-    #     global_bboxes_list = np.delete(global_bboxes_list, arr2, 0)
-    #     delta+=1
-    # else:
-    #     global_bboxes_list[arr2][-1]=high_box[np.int(arr2%3)]
-
-
 
 
     nms_func = nms_rotated

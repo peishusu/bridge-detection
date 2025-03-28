@@ -256,14 +256,13 @@ class LoadFPNImageFromFile:
         if self.to_float32:
             img = img.astype(np.float32) # ori img
 
-        read_global = False
         boxes = results['ann_info']['bboxes']
         w_max = np.max(boxes[:,2])
         h_max = np.max(boxes[:,3])
         if w_max >= self.global_threshold or h_max >= self.global_threshold:
             read_global=True
 
-        read_global=True
+        read_global = False
 
         results['g_img_list'] = []
         results['g_img_infos'] = []
