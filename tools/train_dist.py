@@ -22,28 +22,37 @@ from mmrotate.utils import collect_env, get_root_logger, setup_multi_processes
 
 
 def parse_args():
+    # 创建参数解析器
     parser = argparse.ArgumentParser(description='Train a detector')
 
+    # 解析出来得到 "configs/bridge_benchmark/oriented_rcnn_r50_fpn_2x_ImgFPN_oc.py"
     parser.add_argument('config',
                         default='/scratch/luojunwei/WorldBridge/Code/mmrotate_bridge/configs/bridge_benchmark/',
                         help='train config file path')
+    # 解析出来得到：bridge_train/oriented_rcnn_r50_fpn_2x_ImgFPN_dist
     parser.add_argument('--work-dir',
                         default='',
                         help='the dir to save logs and models')
 
-
+    # 这些参数都没有传递
+    #args.resume_from 变量会是 None，训练会从 头开始，不会加载任何之前的 checkpoint。
     parser.add_argument(
         '--resume-from',
         help='the checkpoint file to resume from')
+    # 默认是 False，表示 不会自动寻找最近的 checkpoint 进行续训。
     parser.add_argument(
         '--auto-resume',
         # default=True, #打开自动续训
         action='store_true',
         help='resume from the latest checkpoint automatically')
+    # args.no_validate 默认是 False，表示 训练过程中会定期在验证集上评估模型。
     parser.add_argument(
         '--no-validate',
         action='store_true',
         help='whether not to evaluate the checkpoint during training')
+
+    #  Python argparse 模块中的一个方法，用于创建一组互斥的命令行参数，确保用户在运行程序时只能选择该组中的一个参数，而不能同时使用多个
+        # 允许不传递任何组内参数（args.gpus 和 args.gpu_ids 均为 None）。
     group_gpus = parser.add_mutually_exclusive_group()
     group_gpus.add_argument(
         '--gpus',
@@ -53,11 +62,13 @@ def parse_args():
     group_gpus.add_argument(
         '--gpu-ids',
         type=int,
+        # 参数数量，表示接受 1个或者 多个整数
         nargs='+',
         # default='1',
         help='ids of gpus to use '
         '(only applicable to non-distributed training)')
-        
+
+    # 传递过来默认是 0
     parser.add_argument('--seed', type=int, default=None, help='random seed') 
     parser.add_argument(
         '--diff-seed',
@@ -77,11 +88,15 @@ def parse_args():
         'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
         'Note that the quotation marks are necessary and that no white space '
         'is allowed.')
+
+    # 指定任务启动方式，默认使用单机非分布式模式
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
         default='none',
         help='job launcher')
+
+    # local_rank用于标识当前进程在单个计算节点（机器）中的GPU编号
     parser.add_argument('--local_rank', type=int, default=0)
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
@@ -90,21 +105,31 @@ def parse_args():
     return args
 
 
+'''
+    该代码是 OpenMMLab 框架（如 MMDetection/MMRotate）的标准训练流程：
+'''
 def main():
+    # 解析命令行参数
     args = parse_args()
 
-    cfg = Config.fromfile(args.config)
+    # 是 MMDetection/MMRotate 等 OpenMMLab 框架中用于加载配置文件的核心方法，其作用是将 Python 格式的配置文件解析为可操作的配置对象
+    # 加载配置文件
+    cfg = Config.fromfile(args.config) # # 从.py文件加载配置对象
+
+    # 命令行覆盖，
     if args.cfg_options is not None:
+        # # 深度合并字典
         cfg.merge_from_dict(args.cfg_options)
 
-    # set multi-process settings
+    # # 配置多进程环境变量
+    # 是 OpenMMLab 框架（如 MMDetection/MMRotate）中用于 配置多进程训练环境 的工具方法，主要解决分布式训练和数据处理中的并行化问题
     setup_multi_processes(cfg)
 
-    # set cudnn_benchmark
+    # set cudnn_benchmark，启用cudnn加速
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
 
-    # work_dir is determined in this priority: CLI > segment in file > filename
+    # work_dir is determined in this priority: CLI > segment in file > filename 工作目录优先级：命令行 > 配置文件 > 默认（基于配置文件名）
     if args.work_dir is not None:
         # update configs according to CLI args if args.work_dir is not None
         cfg.work_dir = args.work_dir
@@ -112,9 +137,11 @@ def main():
         # use config filename as default work_dir if cfg.work_dir is None
         cfg.work_dir = osp.join('./work_dirs',
                                 osp.splitext(osp.basename(args.config))[0])
+    # 恢复训练设置
     if args.resume_from is not None:
         cfg.resume_from = args.resume_from
     cfg.auto_resume = args.auto_resume
+    # GPU ID处理
     if args.gpu_ids is not None:
         cfg.gpu_ids = args.gpu_ids
     else:
@@ -136,17 +163,18 @@ def main():
         _, world_size = get_dist_info()
         cfg.gpu_ids = range(world_size)
 
-    # create work_dir
+    # create work_dir，创建工作目录
     mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))
-    # dump config
+    # dump config，保存配置文件副本
     cfg.dump(osp.join(cfg.work_dir, osp.basename(args.config)))
-    # init the logger before other steps
+    # init the logger before other steps，初始化日志系统
     timestamp = time.strftime('%Y%m%d_%H%M%S', time.localtime())
     log_file = osp.join(cfg.work_dir, f'{timestamp}.log')
     logger = get_root_logger(log_file=log_file, log_level=cfg.log_level)
 
     # init the meta dict to record some important information such as
     # environment info and seed, which will be logged
+    # 作用：收集环境信息
     meta = dict()
     # log env info
     env_info_dict = collect_env()
@@ -170,25 +198,38 @@ def main():
     meta['seed'] = seed
     meta['exp_name'] = osp.basename(args.config)
 
+
+    # 构建检测模型，根据配置构建旋转目标检测模型
+    # bulid_detector()
     model = build_detector(
-        cfg.model,
-        train_cfg=cfg.get('train_cfg'),
-        test_cfg=cfg.get('test_cfg'))
+        cfg.model, # 模型配置
+        train_cfg=cfg.get('train_cfg'), # 训练配置
+        test_cfg=cfg.get('test_cfg')) # 测试配置
+    # 权重初始化
     model.init_weights()
 
+
+    # 构建训练集
     datasets = [build_dataset(cfg.data.train)]
+
+    # 如果配置中定义了两阶段工作流（train+val），构建验证集
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)
         val_dataset.pipeline = cfg.data.train.pipeline
         datasets.append(build_dataset(val_dataset))
+    # 在chekpoint中保存元数据
     if cfg.checkpoint_config is not None:
         # save mmdet version, config file content and class names in
         # checkpoints as meta data
         cfg.checkpoint_config.meta = dict(
-            mmdet_version=__version__ + get_git_hash()[:7],
-            CLASSES=datasets[0].CLASSES)
+            mmdet_version=__version__ + get_git_hash()[:7],# 版本信息
+            CLASSES=datasets[0].CLASSES) # 类别名称
+
     # add an attribute for visualization convenience
+    # 为模型添加类别属性（便于可视化）
     model.CLASSES = datasets[0].CLASSES
+
+    # 开始训练
     train_detector(
         model,
         datasets,

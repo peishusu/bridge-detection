@@ -41,7 +41,9 @@ def build_loss(cfg):
     """Build loss."""
     return ROTATED_LOSSES.build(cfg)
 
-
+'''
+    是 OpenMMLab 框架中用于构建旋转目标检测器（Rotated Detector）的核心函数
+'''
 def build_detector(cfg, train_cfg=None, test_cfg=None):
     """Build detector."""
     if train_cfg is not None or test_cfg is not None:
@@ -52,5 +54,14 @@ def build_detector(cfg, train_cfg=None, test_cfg=None):
         'train_cfg specified in both outer field and model field '
     assert cfg.get('test_cfg') is None or test_cfg is None, \
         'test_cfg specified in both outer field and model field '
+    # ROTATED_DETECTORS：旋转检测器的注册器（Registry）对象
+    '''
+        构建过程：
+            从 cfg 中读取 type 字段（如 type='RotatedTwoStageDetectorImgFPN2'）
+            在 ROTATED_DETECTORS 注册器中查找对应的类                
+            实例化该类，传入：               
+                主配置 cfg               
+                默认参数 default_args（包含训练/测试配置）
+    '''
     return ROTATED_DETECTORS.build(
         cfg, default_args=dict(train_cfg=train_cfg, test_cfg=test_cfg))

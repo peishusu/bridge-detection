@@ -21,6 +21,7 @@ from .builder import ROTATED_DATASETS
 
 
 @ROTATED_DATASETS.register_module()
+# 在 DOTADataset 类中没有显式定义 img_prefix 的原因是因为它继承自父类 CustomDataset，而 img_prefix 的初始化已经在父类中完成。这是面向对象编程中典型的继承设计模式。
 class DOTADataset(CustomDataset):
     """DOTA dataset for detection.
 

@@ -18,12 +18,15 @@ if platform.system() != 'Windows':
     soft_limit = min(max(4096, base_soft_limit), hard_limit)
     resource.setrlimit(resource.RLIMIT_NOFILE, (soft_limit, hard_limit))
 
-
+'''
+是 OpenMMLab 框架中用于动态构建数据集的核心工厂函数，它通过递归解析配置字典来创建复杂的数据集组合。
+'''
 def build_dataset(cfg, default_args=None):
     from mmdet.datasets.dataset_wrappers import (ClassBalancedDataset,
                                                  ConcatDataset,
                                                  MultiImageMixDataset,
                                                  RepeatDataset)
+    # 多配置列表处理
     if isinstance(cfg, (list, tuple)):
         dataset = ConcatDataset([build_dataset(c, default_args) for c in cfg])
     elif cfg['type'] == 'ConcatDataset':
@@ -44,6 +47,7 @@ def build_dataset(cfg, default_args=None):
     elif isinstance(cfg.get('ann_file'), (list, tuple)):
         dataset = _concat_dataset(cfg, default_args)
     else:
+        # ROTATED_DATASETS 表示注册器
         dataset = build_from_cfg(cfg, ROTATED_DATASETS, default_args)
 
     return dataset
