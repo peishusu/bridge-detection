@@ -42,6 +42,7 @@ model = dict(
         out_channels=256,# 输出通道数
         num_outs=5),# 输出5个尺度的特征图
 
+    #检测头部部分
     # OrientedRPNHead（用于生成旋转建议框）
     rpn_head=dict(
         type='OrientedRPNHead',# 旋转RPN头部
