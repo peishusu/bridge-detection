@@ -1,3 +1,6 @@
+# 申明：作为爱好者，只是引用用来复现，并且仅仅是自己使用，并未做商用。
+# 原文，请关注下面的论文大佬
+
 # [TPAMI 2024] Learning to Holistically Detect Bridges from Large-Size VHR Remote Sensing Imagery
 
 [![Project Page](https://img.shields.io/badge/Project-Page-green)](https://luo-z13.github.io/GLH-Bridge-page/) 
